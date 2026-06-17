@@ -20,6 +20,12 @@ Matching is an on-chain frequent batch auction. All orders in a slot are treated
 
 The cost is stated, not hidden: full collateralization instead of leverage on the default path, and collared (capped) instruments instead of unbounded ones. A data-calibrated leveraged tier exists but is gated, and the solvency guarantee does not rest on it.
 
+## Architecture
+
+Skew runs as a based rollup on Solana. Solana orders the transactions, so there is no separate sequencer and no privileged keeper; ordering and censorship-resistance are inherited from the L1. The protocol kernel is the deterministic state-transition function, so anyone can read the sequenced inputs off Solana and re-derive Skew's state independently. Solvency is not trusted, it is proven: the worst-case-escrow invariant is checked by a succinct proof (Groth16) verified on Solana rather than asserted by an operator.
+
+This is early and incremental. The state-transition function, the L1 inbox, the deriving node, and the on-chain proof verifier exist as working, byte-locked slices and have been run against live Solana blocks. The full chain is not deployed.
+
 ## Verification
 
 Claims are checked, not asserted.
