@@ -24,7 +24,7 @@ The cost is stated, not hidden: full collateralization instead of leverage on th
 
 Skew runs as a based rollup on Solana. Solana orders the transactions, so there is no separate sequencer and no privileged keeper; ordering and censorship-resistance are inherited from the L1. The protocol kernel is the deterministic state-transition function, so anyone can read the sequenced inputs off Solana and re-derive Skew's state independently. Solvency is not trusted, it is proven: the worst-case-escrow invariant is checked by a succinct proof (Groth16) verified on Solana rather than asserted by an operator.
 
-This is early and incremental. The state-transition function, the L1 inbox, the deriving node, and the on-chain proof verifier exist as working, byte-locked slices and have been run against live Solana blocks. The full chain is not deployed.
+This is early and incremental. The state-transition function, the L1 inbox, the deriving node, and the on-chain proof verifier exist as working, byte-locked slices and have been run against live Solana blocks. The full chain is not deployed. See [docs/rollup-architecture.md](docs/rollup-architecture.md) for the full design, including the honest boundary between what is proven cryptographically and what is enforced optimistically.
 
 ## Verification
 
@@ -34,6 +34,11 @@ Claims are checked, not asserted.
 - Each payoff adapter's solvency is discharged by handing the negation of "escrow dominates worst-case loss" to Z3 and requiring UNSAT, paired with a known-SAT canary so the harness can prove it is able to fail. Control flow and lifecycle go through Kani and TLA+; the core payoff law is in Lean.
 - The numeric invariant has run over roughly 1.2M arbitrary bounded payoffs with zero violations.
 - Every hot path's compute cost is measured in an in-process VM against Solana's per-account and per-transaction limits, not estimated.
+
+## Documentation
+
+- [Technical explainer](docs/technical-explainer.md) — the protocol in full: the one rule, worst-case loss, clamp-then-snap settlement, cross-margin, perps as rolling bounded derivatives, vaults, and a precise list of what Skew does not claim.
+- [Rollup architecture](docs/rollup-architecture.md) — how Skew runs as a based rollup on Solana: inbox and forced inclusion, derivation, the on-chain solvency proof, exits, and the honest Stage A / Stage B security boundary.
 
 ## Status
 
