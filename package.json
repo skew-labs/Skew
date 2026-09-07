@@ -1,0 +1,12 @@
+{
+  "name": "skew-public-overview",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tools/check-examples.mjs && node tools/check-links.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

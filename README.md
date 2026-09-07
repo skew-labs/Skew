@@ -1,51 +1,86 @@
 # Skew
 
-Permissionless on-chain derivatives on Solana that can't go insolvent by construction.
+**A real-time work exchange for humans, agents, and machines.**
 
-Margin is derived from the payoff, not from a volatility model. Each party escrows the exact worst-case loss of its position over a declared, bounded settlement domain. Once both sides are escrowed the contract is fully pre-funded, so there is nothing left to liquidate and nothing for a price oracle to break. The solvency guarantee is an integer inequality, not a risk estimate.
+Describe the result you need. Set a budget and a deadline. Skew finds eligible
+compute, verifies the delivered result, and releases payment only after the
+acceptance rule is satisfied.
 
-That is the entire thesis. The rest is consequence.
+[Open Skew](https://skew.deals) · [Architecture](docs/architecture.md) ·
+[Protocol overview](docs/protocol-overview.md) · [Current status](docs/status.md)
 
-## How it works
+## One market, two sides
 
-A contract is a payoff function over a finite settlement domain: a tick lattice with declared lower and upper bounds. A party's worst-case loss is the maximum of its loss over that finite set. Because the set is finite the maximum is real and attained, so it needs no continuity, no convexity, and no statistical assumption.
+**Request work**
 
-- Escrow the maximum, not an estimate. At submission a party locks `WCL = max over S in D of loss(S)`. An order that can't fund its worst case fails at submission. A position that exists is a position that is covered.
-- Clamp the reference into the domain. At settlement the realized reference is clamped and snapped onto the same lattice the escrow was taken over. Any reference, stale or manipulated or gapped, can only move escrow between the two counterparties. It never touches the vault.
-- Pay from escrow only. The owing side pays out of its own escrow, rounded so residual dust accrues to the protocol and never against it.
+People and external agents buy a completed result. They do not have to choose a
+GPU model, cloud, region, RPC provider, or execution host.
 
-Listing is permissionless because it is safe by the same math. Margin comes from the payoff, so any asset is admissible; the only gate is a sound worst-case certificate (a full grid maximum, a solver proof, or an interval bound). A sampled bound or a self-declared flag is rejected, and anything whose worst case can't be soundly and feasibly bounded fails closed at registration.
+**Offer a machine**
 
-Matching is an on-chain frequent batch auction. All orders in a slot are treated as simultaneous and clear at one uniform price the program computes over a tick-grid histogram. No off-chain solver, no trade-price oracle, no advantage to being a few milliseconds early.
+Owners connect a compatible computer, choose when it may work, and set an
+earnings floor. The machine receives only work that fits its measured
+capabilities and the owner's policy.
 
-The cost is stated, not hidden: full collateralization instead of leverage on the default path, and collared (capped) instruments instead of unbounded ones. A data-calibrated leveraged tier exists but is gated, and the solvency guarantee does not rest on it.
+```mermaid
+flowchart LR
+    A[Human or external agent] -->|result, deadline, budget| B[Skew Exchange]
+    B --> C[Execution contract]
+    C --> D[Skew Node]
+    D --> E[CPU, GPU, SVM, EVM or verifier]
+    E --> F[Acceptance receipt]
+    F -->|accepted work only| G[Base USDC clearing]
+```
 
-## Architecture
+The traded unit is not a server hour. It is:
 
-Skew runs as a based rollup on Solana. Solana orders the transactions, so there is no separate sequencer and no privileged keeper; ordering and censorship-resistance are inherited from the L1. The protocol kernel is the deterministic state-transition function, so anyone can read the sequenced inputs off Solana and re-derive Skew's state independently. Solvency is not trusted, it is proven: the worst-case-escrow invariant is checked by a succinct proof (Groth16) verified on Solana rather than asserted by an operator.
+```text
+job × deadline × accepted result × committed price
+```
 
-This is early and incremental. The state-transition function, the L1 inbox, the deriving node, and the on-chain proof verifier exist as working, byte-locked slices and have been run against live Solana blocks. The full chain is not deployed. See [docs/rollup-architecture.md](docs/rollup-architecture.md) for the full design, including the honest boundary between what is proven cryptographically and what is enforced optimistically.
+## Why this is an exchange
 
-## Verification
+A request can come from a person, an external agent, or an admitted economic
+event. Machines compete on the ability to complete that exact work before its
+deadline. Skew binds the winning capacity to the job, preserves the receipt
+chain through retries and failover, and clears only verified contributions.
 
-Claims are checked, not asserted.
+Skew does not operate user agents or trading strategies. Discovery and ranking
+can suggest work; only a funded, signed intent can authorize execution or
+payment.
 
-- Every on-chain account has one byte layout, implemented independently in Rust, Python, and TypeScript. A mismatch in any lane fails the build.
-- Each payoff adapter's solvency is discharged by handing the negation of "escrow dominates worst-case loss" to Z3 and requiring UNSAT, paired with a known-SAT canary so the harness can prove it is able to fail. Control flow and lifecycle go through Kani and TLA+; the core payoff law is in Lean.
-- The numeric invariant has run over roughly 1.2M arbitrary bounded payoffs with zero violations.
-- Every hot path's compute cost is measured in an in-process VM against Solana's per-account and per-transaction limits, not estimated.
+## Base
 
-## Documentation
+Base is the first settlement home for paid work. A Base job keeps its budget,
+refund, and payout obligations on `eip155:8453`; execution may use different
+machines or engines, but a scheduler cannot silently move the payment home.
+x402 is an optional machine-payment adapter, not the source of result truth.
 
-- [Technical explainer](docs/technical-explainer.md) — the protocol in full: the one rule, worst-case loss, clamp-then-snap settlement, cross-margin, perps as rolling bounded derivatives, vaults, and a precise list of what Skew does not claim.
-- [Rollup architecture](docs/rollup-architecture.md) — how Skew runs as a based rollup on Solana: inbox and forced inclusion, derivation, the on-chain solvency proof, exits, and the honest Stage A / Stage B security boundary.
+See [Base integration](docs/base.md) for the exact boundary between request,
+acceptance, and settlement.
 
-## Status
+## Repository map
 
-Pre-audit. Not on mainnet. Do not use with real funds.
+- [Architecture](docs/architecture.md) — control plane, data plane, receipt spine, and multichain boundary
+- [Protocol overview](docs/protocol-overview.md) — the objects and transitions that make one job auditable
+- [Security model](docs/security-model.md) — authorities, failure model, and fail-closed rules
+- [Base integration](docs/base.md) — Base USDC and x402 adapter boundaries
+- [Current status](docs/status.md) — what exists, what is experimental, and what is not live
+- [Public examples](examples/) — an illustrative work intent, contract, and acceptance receipt
+- [Prior research](docs/research/) — preserved engineering work that predates the current product
 
-Protocol source, proof harnesses, and internal audit notes are private pending external audit. This repository is the public overview.
+Run the zero-dependency example check:
 
-## License
+```bash
+npm test
+```
 
-All rights reserved pending a license decision.
+## Development boundary
+
+This repository is the public product and protocol overview. The performance
+ranker, provider pricing model, production control plane, signer services,
+deployment playbooks, and live economic data remain private while the system
+is pre-audit. Public examples are fixtures, not evidence of a mainnet payment.
+
+Skew is under active development. Do not use it to move real funds. See
+[SECURITY.md](SECURITY.md) before reporting a vulnerability.

@@ -1,0 +1,23 @@
+{
+  "schema": "skew.public-execution-contract/v1",
+  "job_id": "example-base-simulation-001",
+  "settlement_home": "eip155:8453",
+  "deadline_at": "2026-09-08T00:00:00.000Z",
+  "attempt_policy": {
+    "maximum_attempts": "2",
+    "attempt_timeout_ms": "1000"
+  },
+  "allocations": [
+    {"role": "PRIMARY", "venue_id": "example-provider-a", "fault_domain": "operator-a/host-a"},
+    {"role": "VERIFIER", "venue_id": "example-provider-b", "fault_domain": "operator-b/host-b"}
+  ],
+  "economics": {
+    "asset": "USDC",
+    "reservation_amount_minor": "1000000",
+    "worker_amount_minor": "600000",
+    "verifier_amount_minor": "48000",
+    "protocol_amount_minor": "72000",
+    "refund_amount_minor": "280000",
+    "payout_condition": "ACCEPTED_RESULT_ONLY"
+  }
+}

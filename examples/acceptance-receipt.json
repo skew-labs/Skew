@@ -1,0 +1,20 @@
+{
+  "schema": "skew.public-acceptance-receipt/v1",
+  "job_id": "example-base-simulation-001",
+  "status": "ACCEPTED",
+  "accepted_output_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "replica_output_digests": [
+    "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  ],
+  "economic_effect_id": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "settlement": {
+    "network": "eip155:8453",
+    "state": "READY_NOT_SUBMITTED",
+    "worker_amount_minor": "600000",
+    "verifier_amount_minor": "48000",
+    "protocol_amount_minor": "72000",
+    "refund_amount_minor": "280000"
+  },
+  "accepted_at": "2026-09-07T23:59:00.000Z"
+}
