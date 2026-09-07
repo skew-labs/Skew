@@ -55,3 +55,9 @@ Base mainnet payment is not presented as live in this repository. Production
 activation requires an audited escrow or settlement contract, isolated signer,
 limited funded canary, monitoring, replay-safe reconciliation, and a tested
 refund path. See [Current status](status.md).
+
+## Public review source
+
+The review repository includes the [Base compute escrow, route registry,
+receipt verifier, and contract tests](../contracts/). These contracts are
+pre-audit and are not presented as a live Base mainnet deployment.

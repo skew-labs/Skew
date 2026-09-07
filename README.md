@@ -7,7 +7,8 @@ compute, verifies the delivered result, and releases payment only after the
 acceptance rule is satisfied.
 
 [Open Skew](https://skew.deals) · [Architecture](docs/architecture.md) ·
-[Protocol overview](docs/protocol-overview.md) · [Current status](docs/status.md)
+[Protocol overview](docs/protocol-overview.md) · [Base contracts](contracts/) ·
+[Current status](docs/status.md)
 
 ## One market, two sides
 
@@ -65,6 +66,7 @@ acceptance, and settlement.
 - [Protocol overview](docs/protocol-overview.md) — the objects and transitions that make one job auditable
 - [Security model](docs/security-model.md) — authorities, failure model, and fail-closed rules
 - [Base integration](docs/base.md) — Base USDC and x402 adapter boundaries
+- [Base settlement contracts](contracts/) — public escrow, route registry, quorum verifier, and tests
 - [Current status](docs/status.md) — what exists, what is experimental, and what is not live
 - [Public examples](examples/) — an illustrative work intent, contract, and acceptance receipt
 - [Prior research](docs/research/) — preserved engineering work that predates the current product

@@ -12,7 +12,7 @@ publicly inspectable material, and activation work.
 | Control plane | Durable intent, lease, result, acceptance, and settlement-state components under integration | One release identity through the full paid path and recovery drill |
 | Skew Node | C++20 fixed-function worker path plus Rust economic authority | Native Orange Pi 5 Pro 8GB qualification and signed release update test |
 | Flex compute | Signed lease and result-custody integration prototypes | Real provider lease with production input custody and independent acceptance |
-| Base | State adapters and Base settlement contract model | Audited escrow, isolated signer, limited mainnet canary, payout and refund |
+| Base | State adapters and public Base settlement contracts with failure-path tests | External review, isolated signer, limited mainnet canary, payout and refund |
 | SVM and BNB | Candidate execution and state adapters | Current-source conformance and shared contract integration |
 | Ranking | Shadow evaluation and authority-free recommendation design | Calibrated online evaluation before any displayed economic estimate |
 
